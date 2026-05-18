@@ -7,4 +7,7 @@
     <p>No jobs found</p>
     @endforelse
   </div>
+    <div class="flex justify-center">
+    {{ $jobs->links() }}  
+    </div>
 </x-layout>
