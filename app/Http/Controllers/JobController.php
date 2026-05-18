@@ -7,10 +7,11 @@ use Illuminate\View\View;
 use App\Models\Job;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class JobController extends Controller
 {
-     //Show all job listings
+    //Show all job listings
     //@route GET /jobs
     public function index(): View
     {
@@ -25,7 +26,7 @@ class JobController extends Controller
         return view('jobs.create');
     }
 
-     //Save job to database
+    //Save job to database
     //@route POST /jobs
     public function store(Request $request): RedirectResponse
     {
@@ -51,7 +52,7 @@ class JobController extends Controller
         ]);
 
         //hardcode user id
-        $validatedData['user_id'] = 1;
+        $validatedData['user_id'] = Auth::id();
 
         //check for image
         if ($request->hasFile('company_logo')) {
@@ -69,14 +70,14 @@ class JobController extends Controller
     }
 
 
-   //Show a single job listing
+    //Show a single job listing
     //@route GET /jobs/{$id}
     public function show(Job $job): View
     {
         return view('jobs.show')->with('job', $job);
     }
 
-   //Show edit form for a job listing
+    //Show edit form for a job listing
     //@route GET /jobs/{$id}/edit
     public function edit(Job $job): View
     {
@@ -126,14 +127,14 @@ class JobController extends Controller
         return redirect()->route('jobs.index')->with('success', 'Job listing updated successfully!');
     }
 
-   //Delete a job listing
+    //Delete a job listing
     //@route DELETE /jobs/{$id}
     public function destroy(Job $job): string
     {
-            //Delete logo if exists
-            if ($job->company_logo) {
-                Storage::delete('public/logos/' . basename($job->company_logo));
-            }
+        //Delete logo if exists
+        if ($job->company_logo) {
+            Storage::delete('public/logos/' . basename($job->company_logo));
+        }
         $job->delete();
         return redirect()->route('jobs.index')->with('success', 'Job listing deleted successfully!');
     }
