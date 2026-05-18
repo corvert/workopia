@@ -14,16 +14,16 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
-    public function run(): void
+ public function run(): void
     {
-       //truncate tables to avoid duplicates
-        DB::table('users')->truncate();
+        // Truncate tables
         DB::table('job_listings')->truncate();
+        DB::table('users')->truncate();
+        DB::table('job_user_bookmarks')->truncate();
 
-        //call seeders
         $this->call(TestUserSeeder::class);
         $this->call(RandomUserSeeder::class);
         $this->call(JobSeeder::class);
-      
+        $this->call(BookmarkSeeder::class);
     }
 }
