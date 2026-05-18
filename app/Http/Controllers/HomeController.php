@@ -8,6 +8,9 @@ use App\Models\Job;
 
 class HomeController extends Controller
 {
+
+    //Show home index page
+    //@route GET /
     public function index(): View
     {
         $jobs = Job::latest()->take(6)->get();
