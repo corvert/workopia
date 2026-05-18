@@ -27,18 +27,29 @@ class LoginController extends Controller
         ]);
 
         //Attempt to authenticate the user
-        if(Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials)) {
             // Regenerate session to prevent fixation
             $request->session()->regenerate();
             return redirect()->intended(route('home'))->with('success', 'You are logged in!');
         }
 
         //if auth fails, return back with error message
-            return back()->withErrors([
-                'email' => 'The provided credentials do not match our records.',
-            ])->onlyInput('email');
-        
-
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ])->onlyInput('email');
 
     }
+
+      //Logout user
+    //@route POST /logout
+    public function logout(Request $request): RedirectResponse
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('home')->with('success', 'You are logged out!');
+    }
+  
 }
