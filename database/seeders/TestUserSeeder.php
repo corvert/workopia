@@ -18,7 +18,7 @@ public function run()
         'name' => 'Test User',
         'email' => 'test@test.com',
         'email_verified_at' => Carbon::now(),
-        'password' => Hash::make('12345678'),
+        'password' => Hash::make('password'),
     ]);
 
     return $user;
