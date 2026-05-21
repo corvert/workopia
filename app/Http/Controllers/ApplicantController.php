@@ -7,6 +7,8 @@ use App\Models\Job;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Mail\JobApplied;
+use Illuminate\Support\Facades\Mail;
 
 class ApplicantController extends Controller
 {
@@ -45,6 +47,9 @@ class ApplicantController extends Controller
         $application->user_id = Auth::id();
         $application->save();
 
+        // Send email notification
+         Mail::to($job->user->email)->send(new JobApplied());
+
         return redirect()->back()->with('success', 'Application submitted successfully.');
     }
 
@@ -54,6 +59,6 @@ class ApplicantController extends Controller
     {
         $applicant = Applicant::findOrFail($id);
         $applicant->delete();
-        return redirect()->route('dashboard.show')->with('success', 'Applicant deleted successfully.');
+        return redirect()->route('dashboard')->with('success', 'Applicant deleted successfully.');
     }
 }
