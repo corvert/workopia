@@ -63,21 +63,23 @@
           </div>
         @endif
         @auth
-        <p class="my-5">
-          Put "Job Application" as the subject of your email and attach your
-          resume.
-        </p>
-        <div x-data="{open: false}">
-          <button @click="open = true"
-            class="block w-full text-center px-5 py-2.5 shadow-sm rounded border text-base font-medium cursor-pointer text-indigo-700 bg-indigo-100 hover:bg-indigo-200">
-            <i class="fas fa-envelope mr-2"></i> Apply For This Job
-          </button>
+          <p class="my-5">
+            Put "Job Application" as the subject of your email and attach your
+            resume.
+          </p>
+          <div x-data="{open: false}" id="applicant-form">
+            <button @click="open = true"
+              class="block w-full text-center px-5 py-2.5 shadow-sm rounded border text-base font-medium cursor-pointer text-indigo-700 bg-indigo-100 hover:bg-indigo-200">
+              <i class="fas fa-envelope mr-2"></i> Apply For This Job
+            </button>
 
 
-          <div x-show="open" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
-            <div @click.away="open = false" class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-              <h2 class="text-xl font-semibold mb-4">Apply For {{ $job->title }}</h2>
-              <form enctype="multipart/form-data">
+            <div x-cloak x-show="open"
+              class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+              <div @click.away="open = false" class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+                <h2 class="text-xl font-semibold mb-4">Apply For {{ $job->title }}</h2>
+                <form action="{{ route('applicants.store', $job->id) }}" method="POST" enctype="multipart/form-data">
+            
                 @csrf
                 <x-inputs.text id="full_name" name="full_name" label="Full Name" :required="true" />
                 <x-inputs.text id="contact-phone" name="contact_phone" label="Contact Phone" />
@@ -86,19 +88,20 @@
                   placeholder="Write a message to the employer..." />
                 <x-inputs.text id="location" name="location" label="Location" :required="true" />
                 <x-inputs.file id="resume" name="resume" label="Upload Resume" :required="true" />
-              </form>
-              <button type="submit" 
-                class="mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded">Submit Application</button>
-              <button @click="open = false"
-                class="mt-4 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">Close</button>
-
+            
+                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">
+                  Submit Application
+                </button>
+                <button @click="open = false"
+                  class="mt-4 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">Close</button>
+    </form>
+              </div>
             </div>
-          </div>
 
-          @else
+        @else
             <p class="my-5 bg-gray-200 rounded-xl p-3">
-         <i class="fas fa-bookmark mr-3"></i>  You must be logged in to apply for this job.
-        </p>
+              <i class="fas fa-bookmark mr-3"></i> You must be logged in to apply for this job.
+            </p>
           @endauth
         </div>
 

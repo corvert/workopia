@@ -14,3 +14,7 @@
   background-size: cover;
   background-position: center;
 }
+
+[x-cloak] {
+  display: none !important;
+}
