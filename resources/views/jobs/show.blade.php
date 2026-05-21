@@ -175,9 +175,7 @@
 
     // Geocode the address
     fetch(
-      `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-        address
-      )}.json?access_token=${mapboxgl.accessToken}`
+      `/geocode?address=${encodeURIComponent(address)}`
     )
       .then((response) => response.json())
       .then((data) => {
