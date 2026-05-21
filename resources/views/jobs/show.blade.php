@@ -69,13 +69,14 @@
           </p>
           <div x-data="{open: false}" id="applicant-form">
             <button @click="open = true"
-              class="block w-full text-center px-5 py-2.5 shadow-sm rounded border text-base font-medium cursor-pointer text-indigo-700 bg-indigo-100 hover:bg-indigo-200">
+              class="block w-full text-center px-5 py-2.5 shadow-sm rounded border text-base font-medium 
+              cursor-pointer text-indigo-700 bg-indigo-100 hover:bg-indigo-200">
               <i class="fas fa-envelope mr-2"></i> Apply For This Job
             </button>
 
 
             <div x-cloak x-show="open"
-              class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+              class="fixed inset-0 bg-gray-200 bg-opacity-50 flex items-center justify-center z-50">
               <div @click.away="open = false" class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
                 <h2 class="text-xl font-semibold mb-4">Apply For {{ $job->title }}</h2>
                 <form action="{{ route('applicants.store', $job->id) }}" method="POST" enctype="multipart/form-data">
@@ -148,3 +149,50 @@
     </aside>
   </div>
 </x-layout>
+
+<link
+  href="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.css"
+  rel="stylesheet"
+/>
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Your Mapbox access token
+    mapboxgl.accessToken = "{{ env('MAPBOX_API_KEY') }}";
+
+    // Initialize the map
+    const map = new mapboxgl.Map({
+      container: 'map', // ID of the container element
+      style: 'mapbox://styles/mapbox/streets-v11', // Map style
+      center: [-74.5, 40], // Default center
+      zoom: 9, // Default zoom level
+    });
+
+    // Get address from Laravel view
+    const city = '{{ $job->city }}';
+    const state = '{{ $job->state }}';
+    const address = city + ', ' + state;
+
+    // Geocode the address
+    fetch(
+      `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+        address
+      )}.json?access_token=${mapboxgl.accessToken}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.features.length > 0) {
+          const [longitude, latitude] = data.features[0].center;
+
+          // Center the map and add a marker
+          map.setCenter([longitude, latitude]);
+          map.setZoom(14);
+
+          new mapboxgl.Marker().setLngLat([longitude, latitude]).addTo(map);
+        } else {
+          console.error('No results found for the address.');
+        }
+      })
+      .catch((error) => console.error('Error geocoding address:', error));
+  });
+</script>
