@@ -14,6 +14,16 @@ class ApplicantController extends Controller
     //route POST /jobs/{job}/apply
     public function store(Request $request, Job $job): RedirectResponse
     {
+    //check if user has already applied
+        $existingApplication = Applicant::where('job_id', $job->id)
+            ->where('user_id', Auth::id())
+            ->exists();
+
+
+        if( $existingApplication ) {
+            return redirect()->back()->with('error', 'You have already applied for this job.');
+        }
+
         //validate incoming data
         $validatedData = $request->validate([
             'full_name' => 'required|string|max:255',
