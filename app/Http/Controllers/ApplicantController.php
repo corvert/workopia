@@ -48,7 +48,7 @@ class ApplicantController extends Controller
         $application->save();
 
         // Send email notification
-         Mail::to($job->user->email)->send(new JobApplied());
+         Mail::to($job->user->email)->send(new JobApplied($application, $job));
 
         return redirect()->back()->with('success', 'Application submitted successfully.');
     }
